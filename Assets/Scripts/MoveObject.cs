@@ -7,20 +7,29 @@ public class MoveObject : MonoBehaviour
     [SerializeField] private Vector3 _moveDirection = Vector3.zero;
     [SerializeField] private float _moveSpeed = 100;
     [SerializeField] private Rigidbody _rigidbody;
+    private bool _errorDetected = false;
 
+    private void Awake()
+    {
+        if (_rigidbody == null)
+        {
+            _errorDetected = true;
+            Debug.LogError("RigidBody reference null on object: " + gameObject);
+        }
+    }
 
 
     private void FixedUpdate()
     {
-        Move();
+        if (!_errorDetected)
+            Move();
     }
 
 
 
     private void Move()
     {
-        if (_rigidbody != null)
-            _rigidbody.AddForce(_moveDirection * _moveSpeed * Time.deltaTime);
+        _rigidbody.AddForce(_moveDirection * _moveSpeed * Time.deltaTime);
     }
 
     public void SetDirection(Vector3 direction)
