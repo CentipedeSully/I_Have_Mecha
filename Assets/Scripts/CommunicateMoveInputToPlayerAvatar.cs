@@ -5,14 +5,29 @@ using UnityEngine;
 public class CommunicateMoveInputToPlayerAvatar : MonoBehaviour
 {
 
-    [SerializeField] private Vector2 _moveInput = Vector2.zero;
-    [SerializeField] private Vector3 _moveDirection = Vector3.zero;
+    private Vector2 _moveInput = Vector2.zero;
+    private Vector3 _moveDirection = Vector3.zero;
     [SerializeField] MoveObject _playerAvatarMoveScriptReference;
+    private bool _errorDetected = false;
+
+
+    private void Awake()
+    {
+        if (_playerAvatarMoveScriptReference == null)
+        {
+            _errorDetected = true;
+            Debug.LogError("'MoveObject' reference null on object: " + gameObject);
+        }
+    }
 
     private void Update()
     {
-        BuildVector3DirectionFromVector2Input();
-        CommunicateMoveDirectionToAvatar();
+        if (!_errorDetected)
+        {
+            BuildVector3DirectionFromVector2Input();
+            CommunicateMoveDirectionToAvatar();
+        }
+
     }
 
     private void BuildVector3DirectionFromVector2Input()
