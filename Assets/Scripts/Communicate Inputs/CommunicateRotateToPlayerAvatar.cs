@@ -7,7 +7,7 @@ public class CommunicateRotateToPlayerAvatar : MonoBehaviour
     private Vector2 _turnInput = Vector2.zero;
     private Vector3 _rotateInstruction = Vector3.zero;
 
-    [SerializeField] private RotateObject _playerRotateObjectScriptReference;
+    [SerializeField] private RotateThisAroundObject _playerRotateObjectScriptReference;
 
     private void Update()
     {
@@ -19,7 +19,7 @@ public class CommunicateRotateToPlayerAvatar : MonoBehaviour
     {
         _turnInput = InputDetector.Instance.GetTurnInput();
 
-        _rotateInstruction = new Vector3(_turnInput.y,_turnInput.x,0);
+        _rotateInstruction = new Vector3(_turnInput.x,_turnInput.y,0);
     }
 
     private void CommunicateRotateInstructionsToPlayerAvatar()
