@@ -7,11 +7,10 @@ using SullysToolkit.Abstracts;
 
 public class InputDetector : MonoSingleton<InputDetector>
 {
-    private Vector2 _moveInput;
-    [SerializeField]
-    private Vector2 _turnInput;
-    private bool _shootInput = false;
-    private bool _boostInput = false;
+    [SerializeField] private Vector2 _moveInput;
+    [SerializeField] private Vector2 _turnInput;
+    [SerializeField] private bool _shootInput = false;
+    [SerializeField] private bool _boostInput = false;
 
 
     protected override void InitializeAdditionalFields()
