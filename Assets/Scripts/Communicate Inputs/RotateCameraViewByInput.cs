@@ -41,8 +41,8 @@ public class RotateCameraViewByInput : MonoBehaviour
         _cameraPitch += _turnInput.y * _turnSpeedMultiplier;
 
         //Clamp both Yaw and Pitch
-        _cameraYaw = ClampRotation(_cameraYaw, float.MinValue, float.MaxValue);
-        _cameraPitch = ClampRotation(_cameraPitch, _downRotationMax, _upRotationMax);
+        _cameraYaw = ClampAngle(_cameraYaw, float.MinValue, float.MaxValue);
+        _cameraPitch = ClampAngle(_cameraPitch, _downRotationMax, _upRotationMax);
 
         //Apply new Yaw and Pitch to Target camera
         _cinemachineShoulderCamera.transform.rotation = Quaternion.Euler(_cameraPitch * -1, _cameraYaw,0);
@@ -50,7 +50,7 @@ public class RotateCameraViewByInput : MonoBehaviour
     }
 
 
-    private float ClampRotation(float currentValue, float minValue, float maxValue)
+    public static float ClampAngle(float currentValue, float minValue, float maxValue)
     {
         if (currentValue >= 360) currentValue -= 360;
         if (currentValue <= -360) currentValue += 360;

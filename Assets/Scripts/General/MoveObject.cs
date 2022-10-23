@@ -29,7 +29,7 @@ public class MoveObject : MonoBehaviour
 
     private void Move()
     {
-        _rigidbody.AddForce(_moveDirection * _moveSpeed * Time.deltaTime);
+        _rigidbody.AddRelativeForce(_moveDirection  * _moveSpeed * Time.deltaTime);
     }
 
     public void SetDirection(Vector3 direction)
