@@ -6,7 +6,7 @@ using SullysToolkit;
 public class RotatePlayerToFaceCameraView : MonoBehaviour
 {
     //Lerp's duration
-    [SerializeField] private float _rotationDuration = .2f;
+    [SerializeField] private float _rotationDuration;
     [SerializeField] private float _cameraViewYaw;
     [SerializeField] private float _playerYaw;
     [SerializeField] private float _moveInputDirection;
@@ -24,7 +24,7 @@ public class RotatePlayerToFaceCameraView : MonoBehaviour
     {
         GetCurrentObjectRotations();
 
-        if ( IsPlayerMoving() && _playerYaw != _cameraViewYaw)
+        if (_playerYaw != _cameraViewYaw)
             LerpPlayerRotationToCameraRotation();
     }
 
@@ -52,14 +52,15 @@ public class RotatePlayerToFaceCameraView : MonoBehaviour
         
 
         //clamp yaws to [-360,360] degree range
-        _playerYaw = RotateCameraViewByInput.ClampAngle(_playerYaw, float.MinValue, float.MaxValue);
-        _cameraViewYaw = RotateCameraViewByInput.ClampAngle(_cameraViewYaw, float.MinValue, float.MaxValue);
+        _playerYaw = RoundToHundreth( RotateCameraViewByInput.ClampAngle(_playerYaw, float.MinValue, float.MaxValue));
+        _cameraViewYaw = RoundToHundreth(RotateCameraViewByInput.ClampAngle(_cameraViewYaw, float.MinValue, float.MaxValue));
 
-        if (_playerYaw != _cameraViewYaw)
+        if ( _playerYaw != _cameraViewYaw)
         {
-            if (_lerperReference.IsLerping() == false || _lerperReference.IsLerping() == true && _lerperReference.GetTargetValue() != _cameraViewYaw + _moveInputDirection)
+            if (_lerperReference.IsLerping() == false || _lerperReference.IsLerping() == true && _lerperReference.GetTargetValue() != _cameraViewYaw)
             {
-                _lerperReference.SetLerp(_playerYaw, _cameraViewYaw + _moveInputDirection, _rotationDuration, true);
+                _rotationDuration = CalculateDynamicRotationDuration();
+                _lerperReference.SetLerp(_playerYaw, _cameraViewYaw, _rotationDuration, true);
                 _lerperReference.StartLerp();
             }
         }
@@ -70,5 +71,44 @@ public class RotatePlayerToFaceCameraView : MonoBehaviour
     public void ReadLerpResultIntoPlayerYaw(float result)
     {
         _playerBody.transform.rotation = Quaternion.Euler(0, result, 0); ;
+    }
+
+    private float RoundToHundreth(float value)
+    {
+        return Mathf.Floor(value * 100) / 100;
+    }
+
+    private float CalculateDynamicRotationDuration()
+    {
+        float difference;
+        //Get difference of playerYaw and cameraYaw
+        difference = Mathf.Abs(_cameraViewYaw - _playerYaw);
+        //Debug.Log("Difference of CameraYaw - PlayerYaw: " + difference);
+
+
+
+        //Calculate absoluteDistanceBtwn camera yaw and player yaw
+        difference = CalculateAbsoluteDistanceFrom180Degrees(difference);
+        //Debug.Log("AbsoluteDistance of CameraYaw - PlayerYaw: " + difference);
+
+        return (difference / 100) * .5f;
+
+
+
+    }
+
+    private float CalculateAbsoluteDistanceFrom180Degrees(float value)
+    {
+        float absoluteValue = 0;
+
+        if (value > 180 && value >= 270)
+            absoluteValue = 360 - value;
+
+        else if (value > 180 && value < 270)
+            absoluteValue = value - 2 * (value - 180);
+
+        else absoluteValue = value;
+
+        return absoluteValue;
     }
 }

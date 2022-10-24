@@ -8,6 +8,7 @@ public class CommunicateMoveInputToPlayerAvatar : MonoBehaviour
     private Vector2 _moveInput = Vector2.zero;
     private Vector3 _moveDirection = Vector3.zero;
     [SerializeField] MoveObject _playerAvatarMoveScriptReference;
+    [SerializeField] GameObject _cameraView;
     private bool _errorDetected = false;
 
 
