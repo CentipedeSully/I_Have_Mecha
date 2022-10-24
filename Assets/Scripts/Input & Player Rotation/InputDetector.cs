@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using SullysToolkit.Abstracts;
+using SullysToolkit;
 
 
 public class InputDetector : MonoSingleton<InputDetector>

@@ -625,7 +625,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4589b87b8508f6e48b8fddb385924b16, type: 2}
+  - {fileID: 2100000, guid: dbf898c9f9c4a2d46aa6336e23caeb61, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -847,6 +847,7 @@ GameObject:
   - component: {fileID: 1914658128}
   - component: {fileID: 1914658129}
   - component: {fileID: 1914658130}
+  - component: {fileID: 1914658131}
   m_Layer: 0
   m_Name: Player Controller
   m_TagString: Untagged
@@ -1023,8 +1024,44 @@ MonoBehaviour:
   _rotationDuration: 0.5
   _cameraViewYaw: 0
   _playerYaw: 0
+  _moveInputDirection: 0
   _cameraObject: {fileID: 2074530155}
   _playerBody: {fileID: 2131121397}
+  _lerperReference: {fileID: 1914658131}
+--- !u!114 &1914658131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1914658124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 394a87eda7566044ab03d76aa2ed3871, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _LerperName: Player Rotation To Camera View
+  OnShareLerpResult:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1914658130}
+        m_TargetAssemblyTypeName: RotatePlayerToFaceCameraView, Assembly-CSharp
+        m_MethodName: ReadLerpResultIntoPlayerYaw
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _startValue: 0
+  _targetValue: 0
+  _lerpDuration: 0
+  _currentLerpValue: 0
+  _timeElapsed: 0
+  _percentageComplete: 0
 --- !u!1 &2009712228
 GameObject:
   m_ObjectHideFlags: 0
