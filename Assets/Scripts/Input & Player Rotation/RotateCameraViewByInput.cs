@@ -20,7 +20,10 @@ public class RotateCameraViewByInput : MonoBehaviour
     private void Update()
     {
         GetInputFromDetector();
+    }
 
+    private void LateUpdate()
+    {
         RotateCamera();
     }
 

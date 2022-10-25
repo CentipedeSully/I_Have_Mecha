@@ -15,9 +15,7 @@ public class RotatePlayerToFaceCameraView : MonoBehaviour
 
     [SerializeField] private GameObject _playerBody;
 
-    [SerializeField] private LerpValueOverTime _lerperReference;
-
-
+    private float _currentDampVelocity = 0;
 
 
     private void Update()
@@ -25,7 +23,7 @@ public class RotatePlayerToFaceCameraView : MonoBehaviour
         GetCurrentObjectRotations();
 
         if (_playerYaw != _cameraViewYaw)
-            LerpPlayerRotationToCameraRotation();
+            SmoothDampPlayerYawToCameraYaw();
     }
 
 
@@ -47,30 +45,20 @@ public class RotatePlayerToFaceCameraView : MonoBehaviour
         _moveInputDirection = Mathf.Atan2(InputDetector.Instance.GetMoveInput().x, InputDetector.Instance.GetMoveInput().y) * Mathf.Rad2Deg;  
     }
 
-    private void LerpPlayerRotationToCameraRotation()
+    private void SmoothDampPlayerYawToCameraYaw()
     {
-        
-
         //clamp yaws to [-360,360] degree range
         _playerYaw = RoundToHundreth( RotateCameraViewByInput.ClampAngle(_playerYaw, float.MinValue, float.MaxValue));
         _cameraViewYaw = RoundToHundreth(RotateCameraViewByInput.ClampAngle(_cameraViewYaw, float.MinValue, float.MaxValue));
 
         if ( _playerYaw != _cameraViewYaw)
         {
-            if (_lerperReference.IsLerping() == false || _lerperReference.IsLerping() == true && _lerperReference.GetTargetValue() != _cameraViewYaw)
-            {
-                _rotationDuration = CalculateDynamicRotationDuration();
-                _lerperReference.SetLerp(_playerYaw, _cameraViewYaw, _rotationDuration, true);
-                _lerperReference.StartLerp();
-            }
+            _rotationDuration = CalculateDynamicRotationDuration();
+            var result =  Mathf.SmoothDampAngle(_playerYaw, _cameraViewYaw, ref _currentDampVelocity, _rotationDuration);
+            _playerBody.transform.rotation = Quaternion.Euler(0, result, 0); ;
         }
 
         
-    }
-
-    public void ReadLerpResultIntoPlayerYaw(float result)
-    {
-        _playerBody.transform.rotation = Quaternion.Euler(0, result, 0); ;
     }
 
     private float RoundToHundreth(float value)
@@ -81,15 +69,12 @@ public class RotatePlayerToFaceCameraView : MonoBehaviour
     private float CalculateDynamicRotationDuration()
     {
         float difference;
+
         //Get difference of playerYaw and cameraYaw
         difference = Mathf.Abs(_cameraViewYaw - _playerYaw);
-        //Debug.Log("Difference of CameraYaw - PlayerYaw: " + difference);
-
-
 
         //Calculate absoluteDistanceBtwn camera yaw and player yaw
         difference = CalculateAbsoluteDistanceFrom180Degrees(difference);
-        //Debug.Log("AbsoluteDistance of CameraYaw - PlayerYaw: " + difference);
 
         return (difference / 100) * .5f;
 
@@ -101,9 +86,11 @@ public class RotatePlayerToFaceCameraView : MonoBehaviour
     {
         float absoluteValue = 0;
 
+        //If the angle's value is within the 4th quadrant, reflect it over the y axis into the 1st quadrant
         if (value > 180 && value >= 270)
             absoluteValue = 360 - value;
 
+        //If the angle's value is within the third quadrant, reflect it over the y axis into the 2nd quadrant
         else if (value > 180 && value < 270)
             absoluteValue = value - 2 * (value - 180);
 
